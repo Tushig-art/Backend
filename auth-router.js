@@ -4,8 +4,42 @@ import UserModel from "./models/user-model.js";
 
 const router = express.Router();
 
+const checkIsPhoneNumber = (credential) => {
+  console.log("1");
+  if (credential.length !== 8) return false;
+  console.log("2");
+  if (isNaN(Number(credential))) return false;
+  console.log("3");
+  const firstCharacter = credential[0];
+  if (!["9", "8", "7", "6"].includes(firstCharacter)) return false;
+  console.log("4");
+  return true;
+};
+
+const checkIsEmail = (credential) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(credential);
+};
+
 router.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+  const { credential, password, fullname, username } = req.body;
+  if (!credential || credential === "") {
+    return res.status(400).send({ message: "Email or Phone required!" });
+  }
+  if (!password || password === "") {
+    return res.status(400).send({ message: "Password required!" });
+  }
+  if (!fullname || fullname === "") {
+    return res.status(400).send({ message: "Fullname required!" });
+  }
+  if (!username || username === "") {
+    return res.status(400).send({ message: "Fullname required!" });
+  }
+  // BUH TALBAR UTGATAI BAIGAA
+
+  const isPhoneNumber = checkIsPhoneNumber(credential);
+  const isEmail = checkIsEmail(credential);
+
   const existingUser = await UserModel.findOne({ email });
   if (existingUser) return res.status(400).send({ message: "Email already registered!" });
 
@@ -16,13 +50,9 @@ router.post("/signup", async (req, res) => {
   });
 });
 
-router.post("/signin", (req, res) => {
-  console.log(req.body);
+router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
-  console.log({ email, password });
-  const users = JSON.parse(fs.readFileSync("./user.json", "utf-8"));
-  const existingUser = users.find((user) => user.email === email);
-  console.log({ existingUser });
+  const existingUser = await UserModel.findOne({ email });
   if (!existingUser) return res.status(400).send({ message: "Email or password not correct!" });
   bcrypt.compare(password, existingUser.password, function (err, result) {
     if (!result) {
