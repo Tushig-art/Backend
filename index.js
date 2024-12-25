@@ -1,9 +1,10 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import authRouter from "./auth-router.js";
+import authRouter from "./routers/auth-router.js";
+import postRouter from "./routers/post-router.js";
+import fileRouter from "./routers/file-router.js";
 import dotenv from "dotenv";
-import cluster from "cluster";
 
 dotenv.config();
 
@@ -14,12 +15,10 @@ app.use(express.json());
 app.use(cors());
 
 app.use(authRouter);
+app.use("/api/posts", postRouter);
+app.use("/api/files", fileRouter);
 
 app.listen(PORT, async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log(`Server is running on http://localhost:${PORT}`);
-  } catch (error) {
-    console.error("Failed to connect to MongoDB:", error);
-  }
+  await mongoose.connect(process.env.DATABASE_URL);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
