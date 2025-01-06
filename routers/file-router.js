@@ -9,7 +9,7 @@ dotenv.config();
 
 cloudinary.config({
   cloud_name: 'dh9tqzndm', 
-        api_key: '637293549649415', 
+  api_key: '637293549649415', 
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
@@ -37,6 +37,7 @@ router.post("/", async (req, res) => {
       fileUrl: response.secure_url,
     });
   } catch (err) {
+    console.error(err)
     return res.status(500).send({
       message: "Failed to upload!",
     });

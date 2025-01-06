@@ -1,6 +1,6 @@
 import express from "express";
 import PostModel from "../models/post-model.js";
-import { authMiddleware } from "../middlewares/auth-middleware.js";
+import { authMiddleware } from "../middlewares/auth-middlewares.js";
 
 const router = express.Router();
 
