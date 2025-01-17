@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import UserModel from "../models/user-model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { authMiddleware } from "../middlewares/auth-middleware.js";
+import { authMiddleware } from "../middlewares/auth-middlewares.js";
 
 dotenv.config();
 
